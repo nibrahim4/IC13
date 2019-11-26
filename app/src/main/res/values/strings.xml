@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">IC13</string>
+    <string name="et_tripName">Enter Trip Name</string>
+    <string name="et_city">Search for a city</string>
+    <string name="btn_addTrip">Add Trip</string>
+    <string name="btn_add">+</string>
+    <string name="btn_search">Search</string>
+    <string name="tv_city" />
+    <string name="tv_tripName_trips" />
+    <string name="tv_city_trips" />
+    <string name="btn_addPlace">+</string>
+    <string name="tv_description_city" />
+</resources>
