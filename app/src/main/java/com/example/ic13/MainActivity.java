@@ -13,8 +13,9 @@ import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TripAdapter.TripInterface, PlacesAdapter.PlaceInterface {
 
     public Button btn_addTrip;
     public int REQ_CODE = 5;
@@ -24,8 +25,10 @@ public class MainActivity extends AppCompatActivity {
     public ListView lv_trips;
     public ArrayList<Trip> trips = new ArrayList<>();
     public TripAdapter adapter;
+    public SelectedPlaceAdapter selectedPlaceAdapter;
     public Button btn_addPlaces;
     public String placeId;
+    public List<Place> places = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,15 +37,12 @@ public class MainActivity extends AppCompatActivity {
         setTitle("Trips");
 
         lv_trips = findViewById(R.id.lv_trips);
-
         btn_addTrip = findViewById(R.id.btn_add);
 
 
-        //if(trips.size() > 0){
-          adapter = new TripAdapter(this, R.layout.trip_item, trips);
-            lv_trips.setAdapter(adapter);
-        //}
-
+        adapter = new TripAdapter(this, R.layout.trip_item, trips);
+        selectedPlaceAdapter = new SelectedPlaceAdapter(this, R.layout.selected_place_item, places);
+        lv_trips.setAdapter(adapter);
 
         btn_addTrip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,17 +60,34 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 extrasFromAddTrip = data.getExtras().getBundle(SIGNUP_KEY);
 
-               Trip createdTrip = (Trip) extrasFromAddTrip.getSerializable("addTrip");
+                Trip createdTrip = (Trip) extrasFromAddTrip.getSerializable("addTrip");
                 placeId = createdTrip.placeId;
                 Log.d(TAG, "createdTrip: " + createdTrip.placeId);
-               trips.add(createdTrip);
-
-               // adapter.setNotifyOnChange(true);
+                trips.add(createdTrip);
                 adapter.notifyDataSetChanged();
+            }
+        }else if(requestCode == 6){
+            if (resultCode == RESULT_OK) {
+                extrasFromAddTrip = data.getExtras().getBundle("bundledPlace");
+
+                Place selectedPlace = (Place) extrasFromAddTrip.getSerializable("selectedPlace");
+
+                Log.d(TAG, "createdTrip: " + selectedPlace.name);
+                places.add(selectedPlace);
+                selectedPlaceAdapter.notifyDataSetChanged();
             }
         }
     }
 
 
 
+    @Override
+    public void  passIntentToMain(Intent intent) {
+        startActivity(intent);
+    }
+
+    @Override
+    public void passIntentToMainFromPlaces(Intent intent) {
+        startActivityForResult( intent, 6);
+    }
 }

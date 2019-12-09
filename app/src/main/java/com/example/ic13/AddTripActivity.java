@@ -58,16 +58,16 @@ public class AddTripActivity extends AppCompatActivity {
             btn_search.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new GetDataAsync().execute("https://maps.googleapis.com/maps/api/place/autocomplete/json?types=(cities)&input=" + et_enteredCity.getText().toString() + "&key=AIzaSyB2XoCw_Z71dSqGoTPrwJNbGzTGcSNNBDA");
+                    new GetCitiesAsync().execute("https://maps.googleapis.com/maps/api/place/autocomplete/json?types=(cities)&input=" + et_enteredCity.getText().toString() + "&key=AIzaSyB2XoCw_Z71dSqGoTPrwJNbGzTGcSNNBDA");
                 }
             });
         }else{
-            Toast.makeText(this, "No internet connection!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No internet connection!", Toast.LENGTH_LONG).show();
         }
 
     }
 
-    private class GetDataAsync extends AsyncTask<String, Void, ArrayList<Trip>> {
+    private class GetCitiesAsync extends AsyncTask<String, Void, ArrayList<Trip>> {
 
         @Override
         protected ArrayList<Trip> doInBackground(String... params) {
@@ -78,11 +78,12 @@ public class AddTripActivity extends AppCompatActivity {
                 Log.d("demo", "url: " + url);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
+                Log.d(TAG, "response code: " + connection.getResponseCode());
                 if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     String  json = IOUtils.toString(connection.getInputStream(), "UTF-8");
                     JSONObject root = new JSONObject(json);
                     JSONArray predictions = root.getJSONArray("predictions");
-
+                    Log.d(TAG, "predictions " + predictions);
                     for (int i=0; i<predictions.length(); i++){
 
                         JSONObject predictionsJSONObject = predictions.getJSONObject(i);
@@ -127,16 +128,21 @@ public class AddTripActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
 
-                    Trip trip = new Trip();
-                    trip.tripName = et_tripName.getText().toString();
-                    trip.city = selectedCity;
-                    trip.placeId = placeId;
-                    Intent intentToMain = new Intent(AddTripActivity.this, MainActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("addTrip", trip);
-                    intentToMain.putExtra("bundleTrip", bundle);
-                    setResult(AddTripActivity.RESULT_OK, intentToMain);
-                    finish();
+                    if(et_tripName.getText().toString().equals("")){
+                        Toast.makeText(AddTripActivity.this, "Please enter a trip name!", Toast.LENGTH_LONG).show();
+                    }else{
+                        Trip trip = new Trip();
+                        trip.tripName = et_tripName.getText().toString();
+                        trip.city = selectedCity;
+                        trip.placeId = placeId;
+                        Intent intentToMain = new Intent(AddTripActivity.this, MainActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("addTrip", trip);
+                        intentToMain.putExtra("bundleTrip", bundle);
+                        setResult(AddTripActivity.RESULT_OK, intentToMain);
+                        finish();
+                    }
+
                 }
             });
         }

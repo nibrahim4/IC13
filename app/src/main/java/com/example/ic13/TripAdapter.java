@@ -16,15 +16,19 @@ import androidx.annotation.Nullable;
 import java.util.List;
 
 public class TripAdapter extends ArrayAdapter<Trip> {
+
+    public TripInterface ti;
+
     public TripAdapter(@NonNull Context context, int resource, @NonNull List<Trip> objects) {
         super(context, resource, objects);
+        ti = (TripAdapter.TripInterface) context;
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
-        Trip trip = getItem(position);
+        final Trip trip = getItem(position);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.trip_item, parent, false);
@@ -43,11 +47,17 @@ public class TripAdapter extends ArrayAdapter<Trip> {
             public void onClick(View view) {
                 Intent intentToAddPlaces = new Intent(getContext(), AddPlacesActivity.class);
                 Bundle bundle = new Bundle();
-                //bundle.putSerializable("addPlace", trip.placeId);
+                bundle.putSerializable("addPlace", trip.placeId);
                 intentToAddPlaces.putExtra("bundlePlace", bundle);
-                //startActivity(intentToAddPlaces);
+                ti.passIntentToMain(intentToAddPlaces);
             }
         });
         return convertView;
     }
+
+    public interface TripInterface {
+
+        void passIntentToMain(Intent intent);
+    }
 }
+

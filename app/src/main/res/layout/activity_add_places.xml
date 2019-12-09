@@ -6,4 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".AddPlacesActivity">
 
+    <ListView
+        android:id="@+id/lv_places"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

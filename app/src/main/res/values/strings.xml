@@ -10,4 +10,7 @@
     <string name="tv_city_trips" />
     <string name="btn_addPlace">+</string>
     <string name="tv_description_city" />
+    <string name="tv_place" />
+    <string name="tv_place_name" />
+    <string name="btn_select_place">+</string>
 </resources>
